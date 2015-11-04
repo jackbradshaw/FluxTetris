@@ -5,6 +5,7 @@ var browserify = require("browserify");
 var watchify = require("watchify");
 var reactify = require("reactify");
 var streamify = require("gulp-streamify");
+var babelify = require("babelify");
 
 var path = {
   HTML: "src/index.html",
@@ -26,20 +27,21 @@ gulp.task("copy", function(){
 gulp.task("watch", function() {
   gulp.watch(path.HTML, ["copy"]);
 
-  var watcher  = watchify(browserify({
+  var b = browserify({
     entries: [path.ENTRY_POINT],
-    transform: [reactify],
+    plugin: [watchify],
     debug: true,
     cache: {},
     packageCache: {},
     fullPaths: true
-  }));
+  })
+    .transform(babelify, { presets : [ "es2015", "react"]});
 
-  watcher.on("update", bundle);
+  b.on("update", bundle);
   bundle();
 
   function bundle() {
-    watcher.bundle()
+    b.bundle()
       .pipe(source(path.OUT))
       .pipe(gulp.dest(path.DEST_SRC));
     }
