@@ -6,6 +6,34 @@ var watchify = require("watchify");
 var reactify = require("reactify");
 var streamify = require("gulp-streamify");
 var babelify = require("babelify");
+var merge = require('utils-merge')
+
+/* nicer browserify errors */
+var gutil = require('gulp-util')
+var chalk = require('chalk')
+
+function map_error(err) {
+  if (err.fileName) {
+    // regular error
+    gutil.log(chalk.red(err.name)
+      + ': '
+      + chalk.yellow(err.fileName.replace(__dirname + '/src/js/', ''))
+      + ': '
+      + 'Line '
+      + chalk.magenta(err.lineNumber)
+      + ' & '
+      + 'Column '
+      + chalk.magenta(err.columnNumber || err.column)
+      + ': '
+      + chalk.blue(err.description))
+  } else {
+    // browserify error..
+    gutil.log(chalk.red(err.name)
+      + ': '
+      + chalk.yellow(err.message))
+  }
+}
+/* */
 
 var path = {
   HTML: "src/index.html",
@@ -27,25 +55,18 @@ gulp.task("copy", function(){
 gulp.task("watch", function() {
   gulp.watch(path.HTML, ["copy"]);
 
-  var b = browserify({
-    entries: [path.ENTRY_POINT],
-    plugin: [watchify],
-    debug: true,
-    cache: {},
-    packageCache: {},
-    fullPaths: true
-  })
-    .transform(babelify, { presets : [ "es2015", "react"]});
+  var args = merge(watchify.args, { debug: true })
+    var bundler = watchify(browserify(path.ENTRY_POINT, args)).transform(babelify, { presets : [ "es2015", "react"]});
+    bundle(bundler);
 
-  b.on('error', function (err) {
-      console.log(err.toString());
-      this.emit("end");
-  })
-  b.on("update", bundle);
-  bundle();
+    bundler.on('update', function () {
+      bundle(bundler);
+      gutil.log("Updated");
+    });
 
-  function bundle() {
-    b.bundle()
+  function bundle(bundler) {
+    bundler.bundle()
+      .on('error', map_error)
       .pipe(source(path.OUT))
       .pipe(gulp.dest(path.DEST_SRC));
     }
