@@ -1,0 +1,20 @@
+{
+  "name": "flux-tetris",
+  "version": "1.0.0",
+  "dependencies": {
+    "finalhandler": "^0.4.0",
+    "http": "0.0.0",
+    "react": "^0.14.2",
+    "react-dom": "^0.14.2",
+    "serve-static": "^1.10.0"
+  },
+  "devDependencies": {
+    "browserify": "^12.0.1",
+    "gulp": "^3.9.0",
+    "gulp-react": "^3.1.0",
+    "gulp-streamify": "^1.0.2",
+    "reactify": "^1.1.1",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.6.0"
+  }
+}
