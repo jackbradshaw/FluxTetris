@@ -37,6 +37,10 @@ gulp.task("watch", function() {
   })
     .transform(babelify, { presets : [ "es2015", "react"]});
 
+  b.on('error', function (err) {
+      console.log(err.toString());
+      this.emit("end");
+  })
   b.on("update", bundle);
   bundle();
 
