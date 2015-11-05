@@ -33,7 +33,7 @@ class Grid {
 	}
 
 	removeCompleteRows() {
-		var completeRows = self.rows.filter((row) => row.every((tile) => !!tile));
+		var completeRows = this.rows.filter((row) => row.every((tile) => !!tile));
 		this.removeAndReplaceRows(completeRows);
 	}
 

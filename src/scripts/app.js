@@ -1,10 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import TetrisDispatcher from "./dispatcher/TetrisDispatcher";
-
-var td = new TetrisDispatcher();
+import grid from "./components/grid";
 
 ReactDOM.render(
-  <div>Hello, world!</div>,
+	<div>
+	<h1>Tetris</h1>
+		<canvas id="canvas"></canvas>
+	</div>,
   document.getElementById("app")
 );
