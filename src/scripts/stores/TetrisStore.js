@@ -22,6 +22,9 @@ let TetrisStore = function() {
 			case "change":
 				this.__emitChange();
 				break;
+			case "move":
+				console.log("move");
+				break;
 			default:
 				break;
 			}
