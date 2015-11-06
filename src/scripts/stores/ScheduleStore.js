@@ -9,7 +9,7 @@ class ScheduleStore extends Store {
 
 	constructor(dispatcher) {
 		super(dispatcher);
-		this.__tickInterval = 200;
+		this.__tickInterval = 500;
 		this.__lockInterval = 400;
 		this.__scheduleTick();
 	}
@@ -17,7 +17,9 @@ class ScheduleStore extends Store {
 	__onDispatch(payload) {
 		switch(payload.action.type) {
 		case ActionNames.tetris.move:
-			this.getDispatcher().waitFor([TetrisStore.dispatchToken]);
+		case ActionNames.tetris.rotate:
+		case ActionNames.tetris.hardDrop:
+			TetrisDispatcher.waitFor([TetrisStore.getDispatchToken()]);
 			this.__moved(payload.action.direction);
 			break;
 		case ActionNames.tetris.tick:
@@ -29,12 +31,13 @@ class ScheduleStore extends Store {
 	}
 
 	__moved(direction) {
+		console.log("isLocking", TetrisStore.isLocking());
 		if(TetrisStore.isLocking()) {
-			if(Directions.down.equals(direction)) {
-				this.__scheduleTick();
-			} else {
+			// if(Directions.down.equals(direction)) {
+			// 	this.__scheduleTick();
+			// } else {
 				this.__scheduleTick(this.__lockInterval);
-			}
+		//	}
 		}
 	}
 

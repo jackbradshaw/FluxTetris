@@ -20,6 +20,14 @@ let TetrisStore = function() {
 				_grid.moveTetromino(payload.action.direction);
 				this.__emitChange();
 				break;
+			case ActionNames.tetris.rotate:
+				_grid.rotateTetromino(payload.action.direction);
+				this.__emitChange();
+				break;
+			case ActionNames.tetris.hardDrop:
+				_grid.dropTetromino();
+				this.__emitChange();
+				break;
 			case ActionNames.tetris.tick:
 				_grid.tick();
 				this.__emitChange();

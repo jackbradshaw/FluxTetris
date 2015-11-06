@@ -12,5 +12,7 @@ class Direction {
 export default {
 	left: new Direction(-1 , 0),
 	right: new Direction(1 , 0),
-	down: new Direction(0 , 1)
+	down: new Direction(0 , 1),
+	clockwise: 1,
+	anitclockwise: -1
 };

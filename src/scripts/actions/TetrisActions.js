@@ -22,9 +22,30 @@ class TetrisActions {
 		this.__move(Directions.left);
 	}
 
+	hardDrop() {
+		TetrisDispatcher.handleViewAction({
+			type : ActionNames.tetris.hardDrop
+		});
+	}
+
+	rotateRight() {
+		this.__rotate(Directions.clockwise);
+	}
+
+	rotateLeft() {
+		this.__rotate(Directions.anitclockwise);
+	}
+
 	__move(direction) {
 		TetrisDispatcher.handleViewAction({
 			type: ActionNames.tetris.move,
+			direction: direction
+		});
+	}
+
+	__rotate(direction) {
+		TetrisDispatcher.handleViewAction({
+			type: ActionNames.tetris.rotate,
 			direction: direction
 		});
 	}

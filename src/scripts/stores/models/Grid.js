@@ -78,10 +78,9 @@ class Grid {
 
 	moveTetromino(direction) {
 		if(this.tetromino.move(direction)) {
-			if(this.locking) {
-				while(this.tetromino.move(Directions.down));
-			}
-		} else if(direction.equals(Directions.down)) {
+			this.settleTetromino();
+		} else if(Directions.down.equals(direction)) {
+			console.log("set locking");
 			this.locking = true;
 		}
 	}
@@ -92,9 +91,13 @@ class Grid {
 
 	rotateTetromino(direction) {
 		if(this.tetromino.rotate(direction)) {
-			if(this.resetScheduledLock()) {
-				while(this.tetromino.move({x: 0, y: 1}));
-			}
+			this.settleTetromino();
+		}
+	}
+
+	settleTetromino() {
+		if(this.locking) {
+			while(this.tetromino.move(Directions.down));
 		}
 	}
 
