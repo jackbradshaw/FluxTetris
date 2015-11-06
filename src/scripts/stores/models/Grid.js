@@ -1,14 +1,12 @@
 import TetrominoFactory from "./TetrominoFactory";
 import Tile from "./Tile";
+import Directions from "./Directions";
 
 class Grid {
-	constructor(width, height, updated) {
+	constructor(width, height) {
 		this.width = width;
 		this.height = height;
-		this.updated = updated;
-
-		this.dropInterval = 200;
-		this.lockInterval = 400;
+		this.locking = false;
 
 		this.tetrominoFactory = new TetrominoFactory({
 			x: width / 2,
@@ -44,39 +42,18 @@ class Grid {
 		});
 	}
 
-	scheduleMoveDown() {
-		this.scheduledMoveDown = setTimeout(this.moveDown.bind(this), this.dropInterval);
-	}
-
-	moveDown() {
-		if(!this.tetromino.move({x: 0, y: 1})){
-			this.scheduleLock();
+	tick() {
+		if(this.locking) {
+			this.lockTetromino();
 		} else {
-			this.updated();
-			this.scheduleMoveDown();
+			this.moveTetromino(Directions.down);
 		}
-	}
-
-	scheduleLock() {
-		this.scheduledLock = setTimeout(() => {
-			this.lockTetromino.call(this);
-			this.scheduledLock = undefined;
-		}, this.lockInterval);
-	}
-
-	resetScheduledLock() {
-		let reset = false;
-		if(this.scheduledLock) {
-			clearTimeout(this.scheduledLock);
-			this.scheduleLock();
-			reset = true;
-		}
-		return reset;
 	}
 
 	lockTetromino() {
 		this.getTetrominoTiles().forEach((tile) => this.rows[tile.y][tile.x] = tile.colour);
 		this.removeCompleteRows();
+		this.locking = false;
 		this.dropNewTetromino();
 	}
 
@@ -96,25 +73,21 @@ class Grid {
 		this.tetromino = this.tetrominoFactory.makeTetromino();
 		if(!this.tetromino.getOffsetCoordinates().every(this.isTileAvailable.bind(this))) {
 			alert("Game Over!");
-			clearTimeout(this.scheduledMoveDown);
-			this.updated();
-		} else {
-			this.scheduleMoveDown();
 		}
 	}
 
 	moveTetromino(direction) {
 		if(this.tetromino.move(direction)) {
-			if(this.resetScheduledLock()) {
-				while(this.tetromino.move({x: 0, y: 1}));
+			if(this.locking) {
+				while(this.tetromino.move(Directions.down));
 			}
+		} else if(direction.equals(Directions.down)) {
+			this.locking = true;
 		}
-		this.updated();
 	}
 
 	dropTetromino() {
 		this.tetromino.drop();
-		this.updated();
 	}
 
 	rotateTetromino(direction) {
@@ -123,7 +96,6 @@ class Grid {
 				while(this.tetromino.move({x: 0, y: 1}));
 			}
 		}
-		this.updated();
 	}
 
 	contains(coordinate) {
